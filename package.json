@@ -1,0 +1,44 @@
+{
+    "name": "beez-touch",
+    "version": "0.2.3",
+    "description": "Touch event plug-in for Beez",
+    "keywords": [
+        "beez",
+        "beez.View",
+        "touch",
+        "events",
+        "smartphone"
+    ],
+    "homepage": "https://github.com/masakisueda/beez-touch",
+    "bugs": {
+        "email": "s.masaki07@gmail.com",
+        "url": "https://github.com/masakisueda/beez-touch/issues"
+    },
+    "author": {
+        "name": "Masaki Sueda",
+        "email": "s.masaki07@gmail.com",
+        "url": "https://github.com/masakisueda"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/masakisueda/beez-touch.git"
+    },
+    "dependencies": {
+        "requirejs": "~2.1.4"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-jshint": "~0.6.3",
+        "grunt-contrib-clean": "~0.5.0",
+        "grunt-contrib-copy": "~0.4.1",
+        "grunt-exec": "~0.4.2",
+        "matchdep": "~0.1.1",
+        "jshint": "~2.3.0"
+    },
+    "engines": {
+        "node": "~0.10.1",
+        "npm": "~1.1.0"
+    },
+    "private": true,
+    "main": "./s/beez-touch/index.js"
+}

@@ -1,0 +1,9 @@
+.jshintignore
+.jshintrc
+
+test
+docs
+node_modules
+dist
+release
+spec/

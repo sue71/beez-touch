@@ -1,0 +1,38 @@
+{
+    "name": "beez-touch",
+    "version": "0.2.3",
+    "authors": [
+        "sueda_masaki <s.masaki07@gmail.com>"
+    ],
+    "description": "touch plug-in for beez",
+    "main": "s/beez-touch/index.js",
+    "keywords": [
+        "beez",
+        "beez.View",
+        "touch",
+        "events",
+        "smartphone"
+    ],
+    "license": "MIT",
+    "homepage": "http://github.com/masakisueda/beez-touch",
+    "private": true,
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "beez": "~1.0.17"
+    },
+    "devDependencies": {
+        "mocha": "~1.17.1",
+        "chai": "~1.9.0",
+        "zepto": "~1.1.2",
+        "underscore": "~1.6.0",
+        "backbone": "<=1.1.0",
+        "handlebars": "~1.3.0",
+        "requirejs": "2.1.9"
+    }
+}
