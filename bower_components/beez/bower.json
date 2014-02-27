@@ -1,0 +1,47 @@
+{
+    "name": "beez",
+    "version": "1.0.17",
+    "description": "The framework for mobile browser faster development.",
+    "keywords": [
+        "beez",
+        "browser",
+        "mobile",
+        "backbone",
+        "require.js",
+        "development"
+    ],
+    "readmeFilename": "README.md",
+    "main": [
+        "release/beez.js",
+        "release/beez.min.js"
+    ],
+    "ignore": [
+        "**/.*",
+        "AUTHORS",
+        "Changelog",
+        "LICENSE",
+        "Makefile",
+        "README.md",
+        "build.js",
+        "design",
+        "libs",
+        "package.json",
+        "release/beez-*",
+        "release/README.md",
+        "report",
+        "s",
+        "setver",
+        "t",
+        "vendor"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CyberAgent/beez.git"
+    },
+    "homepage": "https://github.com/CyberAgent/beez",
+    "authors": [
+        "CyberAgent, Inc <npm@cyberagent.co.jp>",
+        "Kei Funagayama <funagayama_kei@cyberagent.co.jp>"
+    ],
+    "license": "MIT"
+}
