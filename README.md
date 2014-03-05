@@ -146,7 +146,7 @@ $ beez-foundation -s
 
 **open browser [Test page. http://0.0.0.0:1109/m/beez-touch/spec/all.html](http://0.0.0.0:1109/m/beez-touch/spec/all.html)**
 
-![Test Page](https://raw.github.com/masakisueda/beez-touch/master/screenshots/spec.png?token=381941__eyJzY29wZSI6IlJhd0Jsb2I6c2hpYnVjYWZlL2JlZXotdG91Y2gvbWFzdGVyL3NjcmVlbnNob3RzL3NwZWMucG5nIiwiZXhwaXJlcyI6MTM5NDAwMDkwNX0%3D--3efcaa2bb3d57302dc3ad328cabbf5a87fd97bef)
+![Test Page](https://raw.github.com/masakisueda/beez-touch/master/screenshots/spec.png)
 
 ## Build
 
