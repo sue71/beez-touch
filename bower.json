@@ -21,6 +21,19 @@
         "bower_components",
         "test",
         "tests"
+        "Gruntfile.js",
+        "LICENSE",
+        "README.md",
+        "README_en.md",
+        "bower.json",
+        "bower_components",
+        "build.js",
+        "package.json",
+        "release",
+        "s",
+        "screenshots",
+        "setver",
+        "spec"
     ],
     "dependencies": {
         "beez": "~1.0.17"
