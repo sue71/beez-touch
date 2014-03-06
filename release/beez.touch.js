@@ -73,10 +73,16 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         this._bztchTaps = null;
 
                         /**
-                         * Flag of enable to tapsu
+                         * Flag of enable to tap
                          * @type {Boolean}
                          */
                         this._bztchIsTappable = false;
+
+                        /**
+                         * Flag of unable to touch
+                         * @type {Boolean}
+                         */
+                        this._bztchIsDisable = false;
 
                         /**
                          * Flag of mouse down
@@ -100,19 +106,13 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                          * ClassName of hover
                          * @type {String}
                          */
-                        this._bztchTapHoverClassName = (typeof options.bztch.hoverClassName === 'string' ? options.bztch.hoverClassName : 'hover');
-
-                        /**
-                         * ClassName of disable elements
-                         * @type {String}
-                         */
-                        this._bztchTapLockedClassName = (typeof options.bztch.lockedClassName === 'string' ? options.bztch.lockedClassName : 'locked');
+                        this._bztchHoverClassName = _.isString(options.bztch.hoverClassName) ? options.bztch.hoverClassName : 'hover';
 
                         /**
                          * Flag of prevent default events
                          * @type {Boolean}
                          */
-                        this._bztchPreventDefault = options.preventDefault || false;
+                        this._bztchPreventDefault = options.bztch.preventDefault || false;
 
                         /**
                          * Position of touchstart
@@ -124,7 +124,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                          * Threshold of touch cancel
                          * @type {Number}
                          */
-                        this._bztchThreshold = options._bztchThreshold || 10;
+                        this._bztchThreshold = options.bztch.threshold || 10;
                     },
 
                     /**
@@ -229,7 +229,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         };
 
                         // checklock
-                        if (!target.hasClass(this._bztchTapLockedClassName)) {
+                        if (!target.hasClass(this._bztchDisableClassName)) {
                             // enable to tap
                             this._bztchIsTappable = true;
                             // execute
@@ -237,7 +237,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                                 this._bztchTaps[bztchId].callbackStart.call(this._bztchTaps[bztchId].context, e);
                             }
                             // hover
-                            target.addClass(this._bztchTapHoverClassName);
+                            target.addClass(this._bztchHoverClassName);
                         }
 
                     },
@@ -272,7 +272,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             Math.abs(e.pageY - this._bztchStartPosition.y) > this._bztchThreshold
                         ) {
                             this._bztchIsTappable = false;
-                            target.removeClass(this._bztchTapHoverClassName);
+                            target.removeClass(this._bztchHoverClassName);
                         }
                     },
 
@@ -295,7 +295,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             e.preventDefault();
                         }
 
-                        if (this._bztchIsTappable && !target.hasClass(this._bztchTapLockedClassName)) {
+                        if (this._bztchIsTappable && !target.hasClass(this._bztchDisableClassName)) {
                             if (this._bztchTaps[bztchId].callback) {
                                 this._bztchTaps[bztchId].callback.call(this._bztchTaps[bztchId].context, e);
                             }
@@ -311,7 +311,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         // reset
                         this._bztchIsTappable = false;
-                        target.removeClass(this._bztchTapHoverClassName);
+                        target.removeClass(this._bztchHoverClassName);
                     },
 
                     /**
@@ -335,7 +335,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         }
 
                         this._bztchIsTappable = false;
-                        target.removeClass(this._bztchTapHoverClassName);
+                        target.removeClass(this._bztchHoverClassName);
                     },
 
                     /**
@@ -424,8 +424,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         delete this._bztchIsTapMouseDown;
                         delete this._bztchPrefix;
                         delete this._bztchTapPrefix;
-                        delete this._bztchTapHoverClassName;
-                        delete this._bztchTapLockedClassName;
+                        delete this._bztchHoverClassName;
                         delete this._bztchStartPosition;
 
                         // super
