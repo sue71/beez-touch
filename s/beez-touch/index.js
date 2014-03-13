@@ -215,7 +215,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         e = normalizeEvent(e);
                         bztchId = this.bztchGetId(target);
 
-                        if (!bztchId) {
+                        if (!bztchId || !this.bztchHasTap(bztchId)) {
                             return;
                         }
 
@@ -253,7 +253,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         e = normalizeEvent(e);
                         bztchId = this.bztchGetId(target);
 
-                        if (!bztchId) {
+                        if (!bztchId || !this.bztchHasTap(bztchId)) {
                             return;
                         }
 
@@ -287,7 +287,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         e = normalizeEvent(e);
                         bztchId = this.bztchGetId(target);
 
-                        if (!bztchId) {
+                        if (!bztchId || !this.bztchHasTap(bztchId)) {
                             return;
                         }
 
@@ -325,7 +325,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         e = normalizeEvent(e);
                         bztchId = this.bztchGetId(target);
 
-                        if (!bztchId) {
+                        if (!bztchId || !this.bztchHasTap(bztchId)) {
                             return;
                         }
 
@@ -405,6 +405,13 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                      */
                     bztchGetId: function bztchGetId(target) {
                         return target.attr('data-' + this._bztchTapPrefix + 'Uid');
+                    },
+
+                    /**
+                     * has tap data
+                     */
+                    bztchHasTap: function bztchHasTap(id) {
+                        return _.has((this._bztchTaps ? this._bztchTaps : {}), id);
                     },
 
                     /**
