@@ -33,19 +33,26 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
             var hasTouch = 'ontouchstart' in window;
 
             /**
-             * normalize event
+             * normalize position
              * @param  {Events} e event object
              */
-            var normalizeEvent = function normalizeEvent(e) {
+            var normalizePosition = function normalizePosition(e) {
+                var position;
+
                 if (hasTouch) {
                     if (e.originalEvent) {
-                        return e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+                        position = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+                        position = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
                     } else {
-                        return e.changedTouches[0];
+                        position = e.changedTouches[0] && e.changedTouches[0];
                     }
                 } else {
-                    return e;
+                    position = e;
                 }
+                e.pageX = position.pageX;
+                e.pageY = position.pageY;
+
+                return e;
             };
 
             /**
@@ -212,9 +219,8 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
-
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
                             return;
                         }
@@ -250,7 +256,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
 
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
@@ -284,7 +290,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
 
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
@@ -322,7 +328,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
 
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
