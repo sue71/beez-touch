@@ -33,30 +33,31 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
             var hasTouch = 'ontouchstart' in window;
 
             /**
-             * normalize event
+             * normalize position
              * @param  {Events} e event object
              */
-            var normalizeEvent = function normalizeEvent(e) {
+            var normalizePosition = function normalizePosition(e) {
+                var position;
+
                 if (hasTouch) {
                     if (e.originalEvent) {
-                        return e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+                        position = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+                        position = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
                     } else {
-                        return e.changedTouches[0];
+                        position = e.changedTouches[0] && e.changedTouches[0];
                     }
                 } else {
-                    return e;
+                    position = e;
                 }
+                e.pageX = position.pageX;
+                e.pageY = position.pageY;
+
+                return e;
             };
 
-            /**
-             * Touch View class
-             *
-             * @class
-             * @extends beez.View
-             */
-            var TouchView = beez.View.extend(
-                'beez.Touch',
-                {
+            var Inheritance = (function (global) {
+                Inheritance = function () {};
+                Inheritance.prototype = {
                     /**
                      * initialize
                      */
@@ -212,9 +213,8 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
-
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
                             return;
                         }
@@ -250,7 +250,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
 
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
@@ -284,7 +284,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
 
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
@@ -322,7 +322,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         var target = $(e.currentTarget),
                             bztchId;
 
-                        e = normalizeEvent(e);
+                        e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
 
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
@@ -437,11 +437,26 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         // super
                         TouchView.__super__.dispose.apply(this, arguments);
                     }
-                }
+                };
+
+                return Inheritance;
+
+            })(this);
+
+            /**
+             * Touch View class
+             *
+             * @class
+             * @extends beez.View
+             */
+            var TouchView = beez.View.extend(
+                'beez.Touch',
+                Inheritance.prototype
             );
 
             beez.touch = {
-                View: TouchView
+                View: TouchView,
+                __inheritance__: Inheritance
             };
 
             return beez.touch;

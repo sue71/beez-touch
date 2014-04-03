@@ -55,15 +55,9 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                 return e;
             };
 
-            /**
-             * Touch View class
-             *
-             * @class
-             * @extends beez.View
-             */
-            var TouchView = beez.View.extend(
-                'beez.Touch',
-                {
+            var Inheritance = (function (global) {
+                Inheritance = function () {};
+                Inheritance.prototype = {
                     /**
                      * initialize
                      */
@@ -443,11 +437,26 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         // super
                         TouchView.__super__.dispose.apply(this, arguments);
                     }
-                }
+                };
+
+                return Inheritance;
+
+            })(this);
+
+            /**
+             * Touch View class
+             *
+             * @class
+             * @extends beez.View
+             */
+            var TouchView = beez.View.extend(
+                'beez.Touch',
+                Inheritance.prototype
             );
 
             beez.touch = {
-                View: TouchView
+                View: TouchView,
+                __inheritance__: Inheritance
             };
 
             return beez.touch;
