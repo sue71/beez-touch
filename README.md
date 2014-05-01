@@ -76,6 +76,9 @@ hover時に付与する`className`
 ### bztch.threshold {Number}
 タップキャンセルを発火する移動量
 
+### bztch.holdDuration {Number}
+タップホールドを発火する時間(ms)
+
 ## Method
 
 ### tap($element, callback, context, options)
@@ -114,6 +117,8 @@ tap($elm, function () {
 #### options.tapEnd {Object}
 - touchendに対するイベントを設定します
 
+#### options.tapHold {Object}
+- 一定時間タッチを続けた時に発火するイベントに対するコールバックを指定します
 
 ## Restriction
 tapイベントは単Viewのrootに該当する$elでキャッチされるため、tap対象となる要素は必ず$el配下に配置されている必要があります。
