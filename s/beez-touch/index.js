@@ -346,7 +346,6 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                      * get tap event data
                      */
                     bztchGetId: function bztchGetId(target) {
-                        console.log(target);
                         return target.attr('data-' + this._bztchTapPrefix + 'Uid');
                     },
 
