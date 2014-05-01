@@ -30,7 +30,21 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                 $ = beez.vendor.$;
 
             // device flag
-            var hasTouch = 'ontouchstart' in window;
+            var hasTouch = 'ontouchstart' in window,
+                EVENT = {
+                start: {
+                    name: hasTouch ? 'touchstart' : 'mousedown',
+                    callback: 'onBztchTapStart'
+                },
+                move: {
+                    name: hasTouch ? 'touchmove' : 'mousemove',
+                    callback: 'onBztchTapMove'
+                },
+                end: {
+                    name: hasTouch ? 'touchend' : 'mouseup',
+                    callback: 'onBztchTapEnd'
+                }
+            };
 
             /**
              * normalize position
@@ -95,7 +109,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                          * Base prefix
                          * @type {String}
                          */
-                        this._bztchPrefix = (_.isString(options.bztch.prefix) ? options.bztch.prefix : 'bztch');
+                        this._bztchPrefix = _.isString(options.bztch.prefix) ? options.bztch.prefix : 'bztch';
 
                         /**
                          * Prefix for tap
@@ -126,6 +140,12 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                          * @type {Number}
                          */
                         this._bztchThreshold = options.bztch.threshold || 10;
+
+                        /**
+                         * Hold duration
+                         * @type {Number}
+                         */
+                        this._bztchHoldDuration = options.bztch.holdDuration || 1000;
                     },
 
                     /**
@@ -136,67 +156,47 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                      * @param {Object} options
                      */
                     tap: function tap($elm, callback, context, options) {
-                        var events,
-                            key,
-                            method,
-                            match,
-                            eventName,
-                            selector,
+                        var self = this,
                             uid;
 
-                        // recursive
-                        if (_.isArray($elm) && $elm.length > 1) {
+                        options = _.defaults(options || {}, {
+                            tapStart: beez.none,
+                            tapMove: beez.none,
+                            tapEnd: beez.none,
+                            context: self
+                        });
+
+                        // multiple selector
+                        if (beez.utils.isArray($elm) && $elm.length > 1) {
                             _.each($elm, function (list, i) {
-                                this.tap($elm.eq(i), callback, context, options);
-                            }, this);
+                                self.tap($elm.eq(i), callback, context, options);
+                            });
                             return;
                         }
 
                         // register events to tap
-                        if (!this._bztchTaps) {
-
-                            // events
-                            events = {};
-                            if (hasTouch) {
-                                events['touchstart .' + this._bztchTapPrefix]  = 'onBztchTapStart';
-                                events['touchmove .' + this._bztchTapPrefix]   = 'onBztchTapMove';
-                                events['touchend .' + this._bztchTapPrefix]    = 'onBztchTapEnd';
-                                events['touchcancel .' + this._bztchTapPrefix] = 'onBztchTapCancel';
-                            } else {
-                                events['mousedown .' + this._bztchTapPrefix]   = 'onBztchTapMouseDown';
-                                events['mousemove .' + this._bztchTapPrefix]   = 'onBztchTapMouseMove';
-                                events['mouseup .' + this._bztchTapPrefix]     = 'onBztchTapMouseUp';
-                                events['mouseleave .' + this._bztchTapPrefix]  = 'onBztchMouseLeave';
-                            }
-
-                            for (key in events) {
-                                method = this[events[key]];
-                                match = key.match(/^(\S+)\s*(.*)$/);
-                                eventName = match[1];
-                                selector = match[2];
-                                method = _.bind(method, this);
-                                eventName += '.delegateEvents' + this.cid;
-
-                                if ($elm === this.$el) {
-                                    this.$el.on(eventName, method);
+                        if (!self._bztchTaps) {
+                            _.each(EVENT, function (evt) {
+                                var eventName = evt.name + '.delegateEvents' + self.cid;
+                                var callback = evt.callback;
+                                if ($elm === self.$el) {
+                                    self.$el.on(eventName, _.bind(self[callback], self) || beez.none);
                                 } else {
-                                    this.$el.on(eventName, selector, method);
+                                    self.$el.on(eventName, '.' + self._bztchTapPrefix, _.bind(self[callback], self) || beez.none);
                                 }
-                            }
-
-                            this._bztchTaps = {};
-
+                            });
+                            self._bztchTaps = {};
                         }
 
                         // unique id
-                        uid = _.uniqueId(this._bztchTapPrefix + '-');
+                        uid = _.uniqueId(self._bztchTapPrefix + '-');
 
-                        this._bztchTaps[uid] = {
+                        self._bztchTaps[uid] = {
                             callback : callback,
-                            callbackStart : (options ? (_.isFunction(options.tapStart) ? options.tapStart : null) : null),
-                            callbackMove : (options ? (_.isFunction(options.tapMove) ? options.tapMove : null) : null),
-                            callbackEnd : (options ? (_.isFunction(options.tapEnd) ? options.tapEnd : null) : null),
-                            callbackCancel : (options ? (_.isFunction(options.tapCancel) ? options.tapCancel : null) : null),
+                            callbackStart : options.tapStart,
+                            callbackMove : options.tapMove,
+                            callbackEnd : options.tapEnd,
+                            callbackHold: options.tapHold,
                             context : context
                         };
 
@@ -210,34 +210,41 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                      * @param {Object} e
                      */
                     onBztchTapStart: function onBztchTapStart(e) {
-                        var target = $(e.currentTarget),
+                        var self = this,
+                            target = $(e.currentTarget),
                             bztchId;
 
+
                         e = normalizePosition(e);
-                        bztchId = this.bztchGetId(target);
-                        if (!bztchId || !this.bztchHasTap(bztchId)) {
+                        bztchId = self.bztchGetId(target);
+
+                        if (self._bztchTaps[bztchId].callbackHold) {
+                            setTimeout(function () {
+                                self.onBztchTapHold.call(self, e);
+                            }, self._bztchHoldDuration);
+                        }
+
+                        if (!bztchId || !self.bztchHasTap(bztchId)) {
                             return;
                         }
 
-                        if (this._bztchPreventDefault) {
+                        if (self._bztchPreventDefault) {
                             e.preventDefault();
                         }
 
-                        this._bztchStartPosition = {
+                        self._bztchStartPosition = {
                             x: e.pageX,
                             y: e.pageY
                         };
 
                         // checklock
-                        if (!target.hasClass(this._bztchDisableClassName)) {
+                        if (!target.hasClass(self._bztchDisableClassName)) {
                             // enable to tap
-                            this._bztchIsTappable = true;
+                            self._bztchIsTappable = true;
                             // execute
-                            if (this._bztchTaps[bztchId].callbackStart) {
-                                this._bztchTaps[bztchId].callbackStart.call(this._bztchTaps[bztchId].context, e);
-                            }
+                            self._bztchTaps[bztchId].callbackStart.call(self._bztchTaps[bztchId].context, e);
                             // hover
-                            target.addClass(this._bztchHoverClassName);
+                            target.addClass(self._bztchHoverClassName);
                         }
 
                     },
@@ -249,6 +256,10 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     onBztchTapMove: function onBztchTapMove(e) {
                         var target = $(e.currentTarget),
                             bztchId;
+
+                        if (!this._bztchIsTappable) {
+                            return;
+                        }
 
                         e = normalizePosition(e);
                         bztchId = this.bztchGetId(target);
@@ -262,9 +273,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         }
 
                         // execute callback
-                        if (this._bztchTaps[bztchId].callbackMove) {
-                            this._bztchTaps[bztchId].callbackMove.call(this._bztchTaps[bztchId].context, e);
-                        }
+                        this._bztchTaps[bztchId].callbackMove.call(this._bztchTaps[bztchId].context, e);
 
                         // threshold
                         if (
@@ -304,9 +313,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                                 return;
                             }
 
-                            if (this._bztchTaps[bztchId].callbackEnd) {
-                                this._bztchTaps[bztchId].callbackEnd.call(this._bztchTaps[bztchId].context, e);
-                            }
+                            this._bztchTaps[bztchId].callbackEnd.call(this._bztchTaps[bztchId].context, e);
                         }
 
                         // reset
@@ -315,10 +322,11 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     },
 
                     /**
-                     * Tap cancel
-                     * @param {Object} e
+                     * Tap Hold
+                     * @param  {[type]} e [description]
+                     * @return {[type]}   [description]
                      */
-                    onBztchTapCancel: function onBztchTapCancel(e) {
+                    onBztchTapHold: function onBztchTapHold(e) {
                         var target = $(e.currentTarget),
                             bztchId;
 
@@ -328,82 +336,17 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         if (!bztchId || !this.bztchHasTap(bztchId)) {
                             return;
                         }
-
                         // execute
-                        if (this._bztchTaps[bztchId].callbackCancel) {
-                            this._bztchTaps[bztchId].callbackCancel.call(this._bztchTaps[bztchId].context, e);
-                        }
-
+                        this._bztchTaps[bztchId].callbackHold.call(this._bztchTaps[bztchId].context, e);
                         this._bztchIsTappable = false;
                         target.removeClass(this._bztchHoverClassName);
-                    },
-
-                    /**
-                     * Mouse down
-                     * @param {Object} e
-                     */
-                    onBztchTapMouseDown: function onBztchTapMouseDown(e) {
-
-                        this._bztchIsTapMouseDown = true;
-
-                        e.touches = [{}];
-                        e.touches[0].clientX = arguments[0].clientX;
-                        e.touches[0].clientY = arguments[0].clientY;
-
-                        // ontouchstart
-                        this.onBztchTapStart.apply(this, arguments);
-                    },
-
-                    /**
-                     * Mouse move
-                     * @param {Object} e
-                     */
-                    onBztchTapMouseMove: function onBztchTapMouseMove(e) {
-
-                        if (!this._bztchIsTapMouseDown) {
-                            return;
-                        }
-
-                        e.touches = [{}];
-                        e.touches[0].clientX = e.clientX;
-                        e.touches[0].clientY = e.clientY;
-
-                        // ontouchmove
-                        this.onBztchTapMove.apply(this, arguments);
-                    },
-
-                    /**
-                     * Mouse up
-                     * @param {Object} e
-                     */
-                    onBztchTapMouseUp: function onBztchTapMouseUp(e) {
-                        // reset
-                        this._bztchIsTapMouseDown = false;
-
-                        e.touches = [{}];
-                        e.touches[0].clientX = e.clientX;
-                        e.touches[0].clientY = e.clientY;
-
-                        // ontouchend
-                        this.onBztchTapEnd.apply(this, arguments);
-                    },
-
-                    /**
-                     * Mouse leave
-                     * @param {Object} e
-                     */
-                    onBztchMouseLeave: function onBztchMouseLeave() {
-                        // reset
-                        this._bztchIsTapMouseDown = false;
-
-                        // ontouchcancel
-                        this.onBztchTapCancel.apply(this, arguments);
                     },
 
                     /**
                      * get tap event data
                      */
                     bztchGetId: function bztchGetId(target) {
+                        console.log(target);
                         return target.attr('data-' + this._bztchTapPrefix + 'Uid');
                     },
 

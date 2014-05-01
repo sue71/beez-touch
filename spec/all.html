@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name = "viewport" content="width=device-width">
   <link rel="stylesheet" href="../bower_components/mocha/mocha.css"/>
   <script type="text/javascript" src="all.js"></script>
   <style type="text/css">
@@ -9,7 +10,9 @@
     #nav { font-size: 12px; }
     #__temp__ { font-size: 12px; }
     #w { margin:0; padding:0; background-color:#fff; }
-    .box { width:50px; height:50px; margin:10px; background-color:#999; box-shadow:0 0 10px #333 inset; }
+    .box { width:50px; height:50px; margin:10px; background-color:#999; box-shadow:0 0 10px #333 inset; -webkit-user-select:none; position: relative; -webkit-touch-callout: none}
+    .box .image {width: 50px; height: 50px; z-index:1; left: 0; top:0; background: url('./image/bird.png') no-repeat left top; background-size: 100% 100% ;}
+    .box .blocker {width: 50px; height:50px; z-index:2; position:absolute; left:0px; top:0px; -webkit-touch-callout: none}
     .box.hover { background-color:#ccc; }
     .box.locked { background-color:#ff0000; }
     .box.customHover { background-color:#ccc; }

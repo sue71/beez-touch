@@ -51,16 +51,35 @@ define(['index', 'beez'], function(index, beez){
                 this._$boxLocked.addClass('locked');
                 this._$hitarea = $('<div></div>');
                 this._$hitarea.addClass('box');
+                this._$holdarea = $('<div class = "box"><div class = "blocker"></div><div class = "image"></div></div>');
 
                 // append
                 this.$el.append(this._$boxBasic);
                 this.$el.append(this._$boxLocked);
                 this.$el.append(this._$hitarea);
+                this.$el.append(this._$holdarea);
                 $('#w').append(this.$el);
             },
 
             after: function () {
                 EntityView.__super__.after.apply(this, arguments);
+
+                this.tap(this._$holdarea.find('.blocker'), null, this, {
+                    tapEnd: function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    },
+                    tapStart: function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    },
+                    tapHold: function (e) {
+                        alert('test');
+                        e.stopPropagation();
+                        e.preventDefault();
+                        return false;
+                    }
+                });
 
                 // you can set callback functions
                 this.tap(this._$hitarea, null, this, {
@@ -72,11 +91,9 @@ define(['index', 'beez'], function(index, beez){
                     },
                     tapEnd: function () {
                         this._$boxBasic.removeClass('hover');
-                    },
-                    tapCancel: function () {
-                        this._$boxBasic.removeClass('hover');
                     }
                 });
+
             },
 
             dispose: function () {
