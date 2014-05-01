@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-var BEEZ_TOUCH_VERSION = '0.2.4';
+var BEEZ_TOUCH_VERSION = '0.2.5';
 
 if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
@@ -346,7 +346,6 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                      * get tap event data
                      */
                     bztchGetId: function bztchGetId(target) {
-                        console.log(target);
                         return target.attr('data-' + this._bztchTapPrefix + 'Uid');
                     },
 
