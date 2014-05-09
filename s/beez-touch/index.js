@@ -159,7 +159,6 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             tapMove: beez.none,
                             tapEnd: beez.none,
                             tapHold: beez.none,
-                            callback: beez.none,
                             context: self
                         });
 
@@ -187,7 +186,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         }
 
                         tap = {
-                            callback : options.callback,
+                            callback : callback || beez.none,
                             callbackStart : options.tapStart,
                             callbackMove : options.tapMove,
                             callbackEnd : options.tapEnd,
@@ -382,13 +381,17 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                      */
                     dispose: function dispose() {
 
-                        _.each(this._bztchTaps, function (value, key) {
-                            delete this._bztchTaps[key].callback;
-                            delete this._bztchTaps[key].callbackStart;
-                            delete this._bztchTaps[key].callbackMove;
-                            delete this._bztchTaps[key].context;
-                            delete this._bztchTaps[key];
+                        _.each(this._bztchTaps, function (taps, id) {
+                            _.each(taps, function (tap) {
+                                delete this._bztchTaps[id].callback;
+                                delete this._bztchTaps[id].callbackStart;
+                                delete this._bztchTaps[id].callbackMove;
+                                delete this._bztchTaps[id].callbackHold;
+                                delete this._bztchTaps[id].context;
+                                delete this._bztchTaps[id];
+                            }, this);
                         }, this);
+
                         delete this._bztchTaps;
                         delete this._bztchIsTappable;
                         delete this._bztchIsTapMouseDown;

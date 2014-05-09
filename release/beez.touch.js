@@ -85,7 +85,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                          * Tap event data
                          * @type {Object}
                          */
-                        this._bztchTaps = null;
+                        this._bztchTaps = {};
 
                         /**
                          * Flag of enable to tap
@@ -172,19 +172,16 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         }
 
                         // register events to tap
-                        if (!self._bztchTaps) {
-                            _.each(EVENT, function (evt) {
-                                var eventName = evt.name + '.delegateEvents' + self.cid,
-                                    callback = evt.callback;
+                        _.each(EVENT, function (evt) {
+                            var eventName = evt.name + '.delegateEvents' + self.cid,
+                                callback = evt.callback;
 
-                                if ($elm === self.$el) {
-                                    self.$el.on(eventName, _.bind(self[callback], self) || beez.none);
-                                } else {
-                                    self.$el.on(eventName, '.' + self._bztchTapPrefix, _.bind(self[callback], self) || beez.none);
-                                }
-                            });
-                            self._bztchTaps = {};
-                        }
+                            if ($elm === self.$el) {
+                                self.$el.on(eventName, _.bind(self[callback], self) || beez.none);
+                            } else {
+                                self.$el.on(eventName, '.' + self._bztchTapPrefix, _.bind(self[callback], self) || beez.none);
+                            }
+                        });
 
                         tap = {
                             callback : options.callback,
