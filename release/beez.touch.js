@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-var BEEZ_TOUCH_VERSION = '0.2.7';
+var BEEZ_TOUCH_VERSION = '0.2.8';
 
 if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
@@ -240,6 +240,9 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             uid,
                             taps;
 
+                        e.stopPropagation();
+                        e.preventDefault();
+
                         uid = self._bztchGetId(target);
 
                         if (!uid || !self._bztchHasTap(uid)) {
@@ -327,6 +330,9 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             target = $(e.currentTarget),
                             uid,
                             taps;
+
+                        e.stopPropagation();
+                        e.preventDefault();
 
                         if (!self._bztchIsTappable) {
                             this._bztchCancel();
