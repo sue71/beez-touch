@@ -120,6 +120,13 @@ tap($elm, function () {
 #### options.tapHold {Object}
 - 一定時間タッチを続けた時に発火するイベントに対するコールバックを指定します
 
+#### options.holdDuration
+- タップホールドイベントを発火する時間を指定します
+
+
+### longTap($elm, callback, context, options)
+- 長押しに対するコールバックを指定します
+
 ## Restriction
 tapイベントは単Viewのrootに該当する$elでキャッチされるため、tap対象となる要素は必ず$el配下に配置されている必要があります。
 
