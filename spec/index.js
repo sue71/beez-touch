@@ -66,19 +66,19 @@ define(['index', 'beez'], function(index, beez){
 
                 this.tap(this._$holdarea.find('.blocker'), null, this, {
                     tapEnd: function (e) {
-                        e.stopPropagation();
                         e.preventDefault();
+                        e.stopPropagation();
                     },
                     tapStart: function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    },
+                    tapHold: function (e) {
+                        console.log('long tap');
                         e.stopPropagation();
                         e.preventDefault();
                     },
-                    tapHold: function (e) {
-                        alert('test');
-                        e.stopPropagation();
-                        e.preventDefault();
-                        return false;
-                    }
+                    holdDuration: 1000
                 });
 
                 // you can set callback functions
