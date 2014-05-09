@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-var BEEZ_TOUCH_VERSION = '0.2.6';
+var BEEZ_TOUCH_VERSION = '0.2.7';
 
 if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
@@ -85,7 +85,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                          * Tap event data
                          * @type {Object}
                          */
-                        this._bztchTaps = {};
+                        this._bztchTaps = null;
 
                         /**
                          * Flag of enable to tap
@@ -159,7 +159,6 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             tapMove: beez.none,
                             tapEnd: beez.none,
                             tapHold: beez.none,
-                            callback: beez.none,
                             context: self
                         });
 
@@ -172,19 +171,22 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         }
 
                         // register events to tap
-                        _.each(EVENT, function (evt) {
-                            var eventName = evt.name + '.delegateEvents' + self.cid,
-                                callback = evt.callback;
+                        if (!self._bztchTaps) {
+                            _.each(EVENT, function (evt) {
+                                var eventName = evt.name + '.delegateEvents' + self.cid,
+                                    callback = evt.callback;
 
-                            if ($elm === self.$el) {
-                                self.$el.on(eventName, _.bind(self[callback], self) || beez.none);
-                            } else {
-                                self.$el.on(eventName, '.' + self._bztchTapPrefix, _.bind(self[callback], self) || beez.none);
-                            }
-                        });
+                                if ($elm === self.$el) {
+                                    self.$el.on(eventName, _.bind(self[callback], self) || beez.none);
+                                } else {
+                                    self.$el.on(eventName, '.' + self._bztchTapPrefix, _.bind(self[callback], self) || beez.none);
+                                }
+                            });
+                            self._bztchTaps = {};
+                        }
 
                         tap = {
-                            callback : options.callback,
+                            callback : callback || beez.none,
                             callbackStart : options.tapStart,
                             callbackMove : options.tapMove,
                             callbackEnd : options.tapEnd,
@@ -379,13 +381,17 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                      */
                     dispose: function dispose() {
 
-                        _.each(this._bztchTaps, function (value, key) {
-                            delete this._bztchTaps[key].callback;
-                            delete this._bztchTaps[key].callbackStart;
-                            delete this._bztchTaps[key].callbackMove;
-                            delete this._bztchTaps[key].context;
-                            delete this._bztchTaps[key];
+                        _.each(this._bztchTaps, function (taps, id) {
+                            _.each(taps, function (tap) {
+                                delete this._bztchTaps[id].callback;
+                                delete this._bztchTaps[id].callbackStart;
+                                delete this._bztchTaps[id].callbackMove;
+                                delete this._bztchTaps[id].callbackHold;
+                                delete this._bztchTaps[id].context;
+                                delete this._bztchTaps[id];
+                            }, this);
                         }, this);
+
                         delete this._bztchTaps;
                         delete this._bztchIsTappable;
                         delete this._bztchIsTapMouseDown;
