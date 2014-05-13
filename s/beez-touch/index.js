@@ -197,6 +197,9 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         if ($elm.hasClass(self._bztchTapPrefix)) {
                             uid = $elm.attr('data-' + self._bztchTapPrefix + 'Uid');
+                            if (_.isEmpty(self._bztchTaps[uid])) {
+                                self._bztchTaps[uid] = [];
+                            }
                             self._bztchTaps[uid].push(tap);
                         } else {
                             uid = _.uniqueId(self._bztchTapPrefix + '-');
