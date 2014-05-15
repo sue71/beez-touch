@@ -243,7 +243,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             uid,
                             taps;
 
-                        e.preventDefault();
+                        e.stopPropagation();
 
                         uid = self._bztchGetId(target);
 

@@ -351,11 +351,13 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         e = normalizePosition(e);
 
                         if (!target.hasClass(self._bztchDisableClassName)) {
-                            _.each(taps, function (tap) {
-                                tap.callbackEnd.call(tap.context, e);
-                                tap.callback.call(tap.context, e);
-                            });
-
+                            var delay = beez.utils.browser.ua.android ? 100 : 0;
+                            setTimeout(function () {
+                                _.each(taps, function (tap) {
+                                    tap.callbackEnd.call(tap.context, e);
+                                    tap.callback.call(tap.context, e);
+                                });
+                            }, delay);
                         }
 
                         // reset
