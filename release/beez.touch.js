@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-var BEEZ_TOUCH_VERSION = '0.2.8';
+var BEEZ_TOUCH_VERSION = '0.2.9';
 
 if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
@@ -351,11 +351,13 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         e = normalizePosition(e);
 
                         if (!target.hasClass(self._bztchDisableClassName)) {
-                            _.each(taps, function (tap) {
-                                tap.callbackEnd.call(tap.context, e);
-                                tap.callback.call(tap.context, e);
-                            });
-
+                            var delay = beez.utils.browser.ua.android ? 100 : 0;
+                            setTimeout(function () {
+                                _.each(taps, function (tap) {
+                                    tap.callbackEnd.call(tap.context, e);
+                                    tap.callback.call(tap.context, e);
+                                });
+                            }, delay);
                         }
 
                         // reset
