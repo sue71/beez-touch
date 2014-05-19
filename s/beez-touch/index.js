@@ -392,14 +392,15 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     dispose: function dispose() {
 
                         _.each(this._bztchTaps, function (taps, id) {
-                            _.each(taps, function (tap) {
-                                delete this._bztchTaps[id].callback;
-                                delete this._bztchTaps[id].callbackStart;
-                                delete this._bztchTaps[id].callbackMove;
-                                delete this._bztchTaps[id].callbackHold;
-                                delete this._bztchTaps[id].context;
-                                delete this._bztchTaps[id];
+                            _.each(taps, function (tap, i) {
+                                delete this._bztchTaps[id][i].callback;
+                                delete this._bztchTaps[id][i].callbackStart;
+                                delete this._bztchTaps[id][i].callbackMove;
+                                delete this._bztchTaps[id][i].callbackHold;
+                                delete this._bztchTaps[id][i].context;
+                                delete this._bztchTaps[id][i];
                             }, this);
+                            delete this._bztchTaps[id];
                         }, this);
 
                         delete this._bztchTaps;
