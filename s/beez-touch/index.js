@@ -163,7 +163,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         });
 
                         // multiple selector
-                        if (beez.utils.isArray($elm) && $elm.length > 1) {
+                        if (beez.utils.isArray($elm) && $elm.length > 0) {
                             _.each($elm, function (list, i) {
                                 self.tap($elm.eq(i), callback, context, options);
                             });
@@ -270,11 +270,11 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                                     tap.timerId && self._bztchTimer.clearTimeout(tap.timerId);
                                     tap.timerId = self._bztchTimer.addTimeout(function () {
                                         if (!self._bztchIsTappable) {
-                                            self._bztchCancel();
+                                            self._bztchCancel(e);
                                             return;
                                         }
                                         tap.callbackHold.call(tap.context, e);
-                                        self._bztchCancel();
+                                        self._bztchCancel(e);
                                     }, tap.holdDuration);
                                 }
                                 tap.callbackStart.call(tap.context, e);
@@ -294,7 +294,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             taps;
 
                         if (!self._bztchIsTappable) {
-                            self._bztchCancel();
+                            self._bztchCancel(e);
                             return;
                         }
 
@@ -317,7 +317,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             Math.abs(e.pageX - self._bztchStartPosition.x) > self._bztchThreshold ||
                             Math.abs(e.pageY - self._bztchStartPosition.y) > self._bztchThreshold
                         ) {
-                            self._bztchCancel();
+                            self._bztchCancel(e);
                             self._bztchIsTappable = false;
                             target.removeClass(self._bztchHoverClassName);
                         }
@@ -337,7 +337,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         e.preventDefault();
 
                         if (!self._bztchIsTappable) {
-                            this._bztchCancel();
+                            this._bztchCancel(e);
                             return;
                         }
                         self._bztchIsTappable = false;
@@ -362,14 +362,16 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         // reset
                         target.removeClass(self._bztchHoverClassName);
-                        self._bztchCancel();
+                        self._bztchCancel(e);
                     },
 
                     /**
                      * cancel
                      */
-                    _bztchCancel: function _bztchCancel() {
+                    _bztchCancel: function _bztchCancel(e) {
                         this._bztchTimer.stop();
+                        this._bztchIsTappable = false;
+                        $(e.currentTarget).removeClass(this._bztchHoverClassName);
                     },
 
                     /**
