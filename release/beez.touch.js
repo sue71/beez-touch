@@ -163,7 +163,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         });
 
                         // multiple selector
-                        if (beez.utils.isArray($elm) && $elm.length > 0) {
+                        if (beez.utils.isArray($elm) && $elm.length > 1) {
                             _.each($elm, function (list, i) {
                                 self.tap($elm.eq(i), callback, context, options);
                             });
