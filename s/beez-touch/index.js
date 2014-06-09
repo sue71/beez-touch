@@ -192,6 +192,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             callbackEnd : options.tapEnd,
                             callbackHold: options.tapHold,
                             holdDuration: options.holdDuration,
+                            $elm: $elm,
                             context : context
                         };
 
@@ -388,6 +389,30 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         return _.has((this._bztchTaps ? this._bztchTaps : {}), id);
                     },
 
+                    enable: function enable($el) {
+                        if ($el) {
+                            $el.removeClass(this._bztchDisableClassName);
+                        } else {
+                            _.each(this._bztchTaps, function (tap) {
+                                if (tap.$elm) {
+                                    tap.$elm.removeClass(this._bztchDisableClassName);
+                                }
+                            });
+                        }
+                    },
+
+                    disable: function disable($el) {
+                        if ($el) {
+                            $el.addClass(this._bztchDisableClassName);
+                        } else {
+                            _.each(this._bztchTaps, function (tap) {
+                                if (tap.$elm) {
+                                    tap.$elm.addClass(this._bztchDisableClassName);
+                                }
+                            });
+                        }
+                    },
+
                     /**
                      * dispose
                      */
@@ -400,7 +425,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                                 delete this._bztchTaps[id][i].callbackMove;
                                 delete this._bztchTaps[id][i].callbackHold;
                                 delete this._bztchTaps[id][i].context;
-                                delete this._bztchTaps[id][i];
+                                delete this._bztchTaps[id][i].$elm;
                             }, this);
                             delete this._bztchTaps[id];
                         }, this);
