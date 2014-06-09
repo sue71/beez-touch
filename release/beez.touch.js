@@ -124,6 +124,12 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         this._bztchHoverClassName = _.isString(options.bztch.hoverClassName) ? options.bztch.hoverClassName : 'hover';
 
                         /**
+                         * ClassName of disable
+                         * @type {String}
+                         */
+                        this._bztchDisableClassName = _.isString(options.bztch.disableClassName) ? options.bztch.disableClassName : 'disable';
+
+                        /**
                          * Position of touchstart
                          * @type {Object}
                          */
