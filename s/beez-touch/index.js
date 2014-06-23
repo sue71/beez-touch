@@ -198,6 +198,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             callbackEnd : options.tapEnd,
                             callbackHold: options.tapHold,
                             holdDuration: options.holdDuration,
+                            once: options.once || false,
                             $elm: $elm,
                             context : context
                         };
@@ -228,6 +229,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                     /**
                      * longTap
+                     *
                      * @param {Element} $elm
                      * @param {Function} callback
                      * @param {beez.View} context
@@ -238,6 +240,21 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             tapHold: callback,
                             holdDuration: options.holdDuration || 1000
                         });
+                    },
+
+                    /**
+                     * tapOnce
+                     *
+                     * @param {Element} $elm
+                     * @param {Function} callback
+                     * @param {beez.View} context
+                     * @param {Object} options
+                     */
+                    tapOnce: function tapOnce($elm, callback, context, options) {
+                        options = _.extend(options || {}, {
+                            once: true
+                        });
+                        return this.tap($elm, callback, context, options);
                     },
 
                     /**
@@ -360,9 +377,12 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         if (!target.hasClass(self._bztchDisableClassName)) {
                             var delay = beez.utils.browser.ua.android ? 100 : 0;
                             setTimeout(function () {
-                                _.each(taps, function (tap) {
+                                _.each(taps, function (tap, i) {
                                     tap.callbackEnd.call(tap.context, e);
                                     tap.callback.call(tap.context, e);
+                                    if (tap.once) {
+                                        self._disposeTap(uid, i);
+                                    }
                                 });
                             }, delay);
                         }
@@ -419,6 +439,16 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         }
                     },
 
+                    _disposeTap: function _disposeTap(id, index) {
+                        delete this._bztchTaps[id][index].callback;
+                        delete this._bztchTaps[id][index].callbackStart;
+                        delete this._bztchTaps[id][index].callbackMove;
+                        delete this._bztchTaps[id][index].callbackHold;
+                        delete this._bztchTaps[id][index].context;
+                        delete this._bztchTaps[id][index].$elm;
+                        delete this._bztchTaps[id][index];
+                    },
+
                     /**
                      * dispose
                      */
@@ -426,12 +456,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         _.each(this._bztchTaps, function (taps, id) {
                             _.each(taps, function (tap, i) {
-                                delete this._bztchTaps[id][i].callback;
-                                delete this._bztchTaps[id][i].callbackStart;
-                                delete this._bztchTaps[id][i].callbackMove;
-                                delete this._bztchTaps[id][i].callbackHold;
-                                delete this._bztchTaps[id][i].context;
-                                delete this._bztchTaps[id][i].$elm;
+                                this._disposeTap(id, i);
                             }, this);
                             delete this._bztchTaps[id];
                         }, this);
