@@ -419,10 +419,12 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         if ($el) {
                             $el.removeClass(this._bztchDisableClassName);
                         } else {
-                            _.each(this._bztchTaps, function (tap) {
-                                if (tap.$elm) {
-                                    tap.$elm.removeClass(this._bztchDisableClassName);
-                                }
+                            _.each(this._bztchTaps, function (taps) {
+                                _.each(taps, function (tap) {
+                                    if (tap.$elm) {
+                                        tap.$elm.removeClass(this._bztchDisableClassName);
+                                    }
+                                });
                             });
                         }
                     },
@@ -431,10 +433,12 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         if ($el) {
                             $el.addClass(this._bztchDisableClassName);
                         } else {
-                            _.each(this._bztchTaps, function (tap) {
-                                if (tap.$elm) {
-                                    tap.$elm.addClass(this._bztchDisableClassName);
-                                }
+                            _.each(this._bztchTaps, function (taps) {
+                                _.each(taps, function (tap) {
+                                    if (tap.$elm) {
+                                        tap.$elm.addClass(this._bztchDisableClassName);
+                                    }
+                                });
                             });
                         }
                     },
