@@ -424,8 +424,8 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                                     if (tap.$elm) {
                                         tap.$elm.removeClass(this._bztchDisableClassName);
                                     }
-                                });
-                            });
+                                }, this);
+                            }, this);
                         }
                     },
 
@@ -438,8 +438,8 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                                     if (tap.$elm) {
                                         tap.$elm.addClass(this._bztchDisableClassName);
                                     }
-                                });
-                            });
+                                }, this);
+                            }, this);
                         }
                     },
 
