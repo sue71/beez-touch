@@ -51,7 +51,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
              * @param  {Events} e event object
              */
             var normalizePosition = function normalizePosition(e) {
-                var position;
+                var position = {};
 
                 if (hasTouch) {
                     if (e.originalEvent) {
@@ -63,10 +63,8 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                 } else {
                     position = e;
                 }
-                e.pageX = position.pageX;
-                e.pageY = position.pageY;
 
-                return e;
+                return position;
             };
 
             var Inheritance = (function (global) {
@@ -176,20 +174,23 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             return;
                         }
 
-                        // register events to tap
-                        if (!self._bztchTaps) {
+                        if (!self._atached || (!self._atachedSelf && $elm === self.$el)) {
+                            // register events to tap
                             _.each(EVENT, function (evt) {
                                 var eventName = evt.name + '.delegateEvents' + self.cid,
                                     callback = evt.callback;
 
                                 if ($elm === self.$el) {
                                     self.$el.on(eventName, _.bind(self[callback], self) || beez.none);
+                                    self._atachedSelf = true;
                                 } else {
                                     self.$el.on(eventName, '.' + self._bztchTapPrefix, _.bind(self[callback], self) || beez.none);
+                                    self._atached = true;
                                 }
                             });
-                            self._bztchTaps = {};
                         }
+
+                        self._bztchTaps = self._bztchTaps || {};
 
                         tap = {
                             callback : callback || beez.none,
@@ -267,8 +268,6 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             uid,
                             taps;
 
-                        e.stopPropagation();
-
                         uid = self._bztchGetId(target);
 
                         if (!uid || !self._bztchHasTap(uid)) {
@@ -277,10 +276,10 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         taps = self._bztchTaps[uid];
 
-                        e = normalizePosition(e);
+                        var position = normalizePosition(e);
                         self._bztchStartPosition = {
-                            x: e.pageX,
-                            y: e.pageY
+                            x: position.pageX,
+                            y: position.pageY
                         };
 
                         // check lock
@@ -330,7 +329,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         taps = self._bztchTaps[uid];
 
-                        e = normalizePosition(e);
+                        var position = normalizePosition(e);
                         // execute callback
                         _.each(taps, function (tap) {
                             tap.callbackMove.call(tap.context, e);
@@ -338,8 +337,8 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         // threshold
                         if (
-                            Math.abs(e.pageX - self._bztchStartPosition.x) > self._bztchThreshold ||
-                            Math.abs(e.pageY - self._bztchStartPosition.y) > self._bztchThreshold
+                            Math.abs(position.pageX - self._bztchStartPosition.x) > self._bztchThreshold ||
+                            Math.abs(position.pageY - self._bztchStartPosition.y) > self._bztchThreshold
                         ) {
                             self._bztchCancel(e);
                             self._bztchIsTappable = false;
@@ -357,9 +356,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             uid,
                             taps;
 
-                        e.stopPropagation();
                         e.preventDefault();
-
                         if (!self._bztchIsTappable) {
                             this._bztchCancel(e);
                             return;
@@ -372,7 +369,6 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         }
 
                         taps = self._bztchTaps[uid];
-                        e = normalizePosition(e);
 
                         if (!target.hasClass(self._bztchDisableClassName)) {
                             var delay = beez.utils.browser.ua.android ? 100 : 0;
