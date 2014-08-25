@@ -371,16 +371,13 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         taps = self._bztchTaps[uid];
 
                         if (!target.hasClass(self._bztchDisableClassName)) {
-                            var delay = beez.utils.browser.ua.android ? 100 : 0;
-                            setTimeout(function () {
-                                _.each(taps, function (tap, i) {
-                                    tap.callbackEnd.call(tap.context, e);
-                                    tap.callback.call(tap.context, e);
-                                    if (tap.once) {
-                                        self._disposeTap(uid, i);
-                                    }
-                                });
-                            }, delay);
+                            _.each(taps, function (tap, i) {
+                                tap.callbackEnd.call(tap.context, e);
+                                tap.callback.call(tap.context, e);
+                                if (tap.once) {
+                                    self._disposeTap(uid, i);
+                                }
+                            });
                         }
 
                         // reset
