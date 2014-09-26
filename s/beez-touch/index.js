@@ -437,6 +437,9 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     },
 
                     _disposeTap: function _disposeTap(id, index) {
+                        if (!this._bztchTaps) {
+                            return;
+                        }
                         delete this._bztchTaps[id][index].callback;
                         delete this._bztchTaps[id][index].callbackStart;
                         delete this._bztchTaps[id][index].callbackMove;
