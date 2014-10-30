@@ -1,6 +1,6 @@
 {
     "name": "beez-touch",
-    "version": "0.2.9",
+    "version": "0.3.0",
     "description": "Touch event plug-in for Beez",
     "keywords": [
         "beez",
