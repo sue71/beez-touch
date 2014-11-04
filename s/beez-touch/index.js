@@ -437,7 +437,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     },
 
                     _disposeTap: function _disposeTap(id, index) {
-                        if (!this._bztchTaps || !this._bztchTaps[id] || !this._bztchTaps[id][index]) {
+                        if (!this._bztchTaps || !this._bztchTaps[id] || this._bztchTaps[id][index]) {
                             return;
                         }
                         delete this._bztchTaps[id][index].callback;
@@ -447,6 +447,9 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         delete this._bztchTaps[id][index].context;
                         delete this._bztchTaps[id][index].$elm;
                         delete this._bztchTaps[id][index];
+
+                        this._bztchTaps[id].splice(index, 1);
+
                     },
 
                     /**
