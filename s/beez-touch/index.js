@@ -283,7 +283,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         };
 
                         // check lock
-                        if (!target.hasClass(self._bztchDisableClassName)) {
+                        if (!target.data('disable')) {
                             self._bztchIsTappable = true;
                             target.addClass(self._bztchHoverClassName);
 
@@ -370,7 +370,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         taps = self._bztchTaps[uid];
 
-                        if (!target.hasClass(self._bztchDisableClassName)) {
+                        if (!target.data('disable')) {
                             _.each(taps, function (tap, i) {
                                 tap.callbackEnd.call(tap.context, e);
                                 tap.callback.call(tap.context, e);
@@ -411,10 +411,12 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     enable: function enable($el) {
                         if ($el) {
                             $el.removeClass(this._bztchDisableClassName);
+                            $el.data('disable', false);
                         } else {
                             _.each(this._bztchTaps, function (taps) {
                                 _.each(taps, function (tap) {
                                     if (tap.$elm) {
+                                        tap.$elm.data('disable', false);
                                         tap.$elm.removeClass(this._bztchDisableClassName);
                                     }
                                 }, this);
@@ -424,11 +426,13 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                     disable: function disable($el) {
                         if ($el) {
+                            $el.data('disable', true);
                             $el.addClass(this._bztchDisableClassName);
                         } else {
                             _.each(this._bztchTaps, function (taps) {
                                 _.each(taps, function (tap) {
                                     if (tap.$elm) {
+                                        tap.$elm.data('disable', true);
                                         tap.$elm.addClass(this._bztchDisableClassName);
                                     }
                                 }, this);
@@ -437,7 +441,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     },
 
                     _disposeTap: function _disposeTap(id, index) {
-                        if (!this._bztchTaps || !this._bztchTaps[id] || this._bztchTaps[id][index]) {
+                        if (!this._bztchTaps || !this._bztchTaps[id] || !this._bztchTaps[id][index]) {
                             return;
                         }
                         delete this._bztchTaps[id][index].callback;
