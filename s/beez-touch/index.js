@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-var BEEZ_TOUCH_VERSION = '0.3.0';
+var BEEZ_TOUCH_VERSION = '0.3.1';
 
 if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
