@@ -374,11 +374,14 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                             _.each(taps, function (tap, i) {
                                 tap.callbackEnd.call(tap.context, e);
                                 tap.callback.call(tap.context, e);
-                                if (tap.once) {
-                                    self._disposeTap(uid, i);
-                                }
                             });
                         }
+
+                        _.each(taps, function (tap, i) {
+                            if (tap.once) {
+                                self._disposeTap(uid, i);
+                            }
+                        });
 
                         // reset
                         target.removeClass(self._bztchHoverClassName);
