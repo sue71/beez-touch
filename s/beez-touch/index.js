@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-var BEEZ_TOUCH_VERSION = '0.3.1';
+var BEEZ_TOUCH_VERSION = '0.3.2';
 
 if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
@@ -283,7 +283,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         };
 
                         // check lock
-                        if (!target.data('disable')) {
+                        if (!target.hasClass(self._bztchDisableClassName)) {
                             self._bztchIsTappable = true;
                             target.addClass(self._bztchHoverClassName);
 
@@ -370,7 +370,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                         taps = self._bztchTaps[uid];
 
-                        if (!target.data('disable')) {
+                        if (!target.hasClass(self._bztchDisableClassName)) {
                             _.each(taps, function (tap, i) {
                                 tap.callbackEnd.call(tap.context, e);
                                 tap.callback.call(tap.context, e);
@@ -414,12 +414,10 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                     enable: function enable($el) {
                         if ($el) {
                             $el.removeClass(this._bztchDisableClassName);
-                            $el.data('disable', false);
                         } else {
                             _.each(this._bztchTaps, function (taps) {
                                 _.each(taps, function (tap) {
                                     if (tap.$elm) {
-                                        tap.$elm.data('disable', false);
                                         tap.$elm.removeClass(this._bztchDisableClassName);
                                     }
                                 }, this);
@@ -429,13 +427,11 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
                     disable: function disable($el) {
                         if ($el) {
-                            $el.data('disable', true);
                             $el.addClass(this._bztchDisableClassName);
                         } else {
                             _.each(this._bztchTaps, function (taps) {
                                 _.each(taps, function (tap) {
                                     if (tap.$elm) {
-                                        tap.$elm.data('disable', true);
                                         tap.$elm.addClass(this._bztchDisableClassName);
                                     }
                                 }, this);
