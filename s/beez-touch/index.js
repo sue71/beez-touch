@@ -5,7 +5,7 @@
  * @license MIT
  */
 
-var BEEZ_TOUCH_VERSION = '0.3.2';
+var BEEZ_TOUCH_VERSION = '0.3.3';
 
 if (typeof module !== 'undefined' && module.exports) { // node.js: main
 
@@ -167,7 +167,7 @@ if (typeof module !== 'undefined' && module.exports) { // node.js: main
                         });
 
                         // multiple selector
-                        if (beez.utils.isArray($elm) && $elm.length > 1) {
+                        if ($elm.length > 1) {
                             _.each($elm, function (list, i) {
                                 self.tap($elm.eq(i), callback, context, options);
                             });
